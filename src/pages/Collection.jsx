@@ -10,6 +10,7 @@ const Collection = () => {
   const [filterProducts, setFilterProducts] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSubCategories, setSelectedSubCategories] = useState([]);
+  const [sortOption, setSortOption] = useState("relevant");
 
   const toggleCategory = (e) => {
     const value = e.target.value;
@@ -29,12 +30,17 @@ const Collection = () => {
     }
   };
 
-  const applyFilters = () => {
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value);
+  };
+
+  const applyFiltersAndSort = () => {
     if (!products || products.length === 0) {
       setFilterProducts([]);
       return;
     }
 
+    // First apply filters
     let filteredProducts = [...products];
 
     // Apply category filter if any categories are selected
@@ -51,7 +57,32 @@ const Collection = () => {
       );
     }
 
-    setFilterProducts(filteredProducts);
+    // Then apply sorting
+    let sortedProducts = [...filteredProducts];
+    
+    switch (sortOption) {
+      case "low-high":
+        sortedProducts.sort((a, b) => a.price - b.price);
+        break;
+      case "high-low":
+        sortedProducts.sort((a, b) => b.price - a.price);
+        break;
+      case "newest":
+        sortedProducts.sort((a, b) => b.date - a.date);
+        break;
+      case "relevant":
+      default:
+        // For "relevant", we can prioritize bestsellers and then sort by date
+        sortedProducts.sort((a, b) => {
+          if (a.bestseller === b.bestseller) {
+            return b.date - a.date; // Newer items first if bestseller status is the same
+          }
+          return a.bestseller ? -1 : 1; // Bestsellers first
+        });
+        break;
+    }
+
+    setFilterProducts(sortedProducts);
   };
 
   // Initialize filtered products when component mounts
@@ -61,10 +92,10 @@ const Collection = () => {
     }
   }, [products]);
 
-  // Apply filters whenever selected categories or subcategories change
+  // Apply filters and sorting whenever selected categories, subcategories, or sort option changes
   useEffect(() => {
-    applyFilters();
-  }, [selectedCategories, selectedSubCategories, products]);
+    applyFiltersAndSort();
+  }, [selectedCategories, selectedSubCategories, sortOption, products]);
 
   return (
     <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'>
@@ -117,27 +148,49 @@ const Collection = () => {
 
       {/* Product Grid */}
       <div className='flex-1'>
-        <div className='flex justify-between text-base sm:text-2xl mb-4'>
+        <div className='flex justify-between items-center text-base sm:text-2xl mb-4'>
           <Title text1={'All'} text2={'COLLECTIONS'} />
 
-          <select className='border-2 border-gray-300 text-sm px-2'>
-            <option value="relavent">Sort by: Relevant</option>
+          <select 
+            className='border-2 border-gray-300 text-sm px-2 py-1'
+            value={sortOption}
+            onChange={handleSortChange}
+          >
+            <option value="relevant">Sort by: Relevant</option>
             <option value="low-high">Sort by: Low to High</option>
             <option value="high-low">Sort by: High to Low</option>
+            <option value="newest">Sort by: Newest</option>
           </select>
         </div>
 
-        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6'>
-          {filterProducts && filterProducts.map((item, index) => (
-            <ProductItem
-              key={index}
-              name={item.name}
-              id={item._id}
-              price={item.price}
-              image={item.image}
-            />
-          ))}
-        </div>
+        {/* Status information about filters (optional) */}
+        {(selectedCategories.length > 0 || selectedSubCategories.length > 0) && (
+          <div className="mb-4 text-sm text-gray-600">
+            <p>
+              Showing {filterProducts.length} {filterProducts.length === 1 ? 'product' : 'products'}
+              {selectedCategories.length > 0 && ` in ${selectedCategories.join(', ')}`}
+              {selectedSubCategories.length > 0 && ` for ${selectedSubCategories.join(', ')}`}
+            </p>
+          </div>
+        )}
+
+        {filterProducts.length === 0 ? (
+          <div className="flex justify-center items-center h-60 text-gray-500">
+            <p>No products match your selected filters.</p>
+          </div>
+        ) : (
+          <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6'>
+            {filterProducts.map((item, index) => (
+              <ProductItem
+                key={index}
+                name={item.name}
+                id={item._id}
+                price={item.price}
+                image={item.image}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
