@@ -1,5 +1,5 @@
 import React from 'react';
-import {assets} from '../assets/assets'; // Make sure to update this path
+import {assets} from '../assets/assets'; 
 
 const Footer = () => {
   return (
@@ -30,6 +30,12 @@ const Footer = () => {
                 <li>contact@vibelayer.com</li>
                 </ul>
 
+        </div>
+        <div>
+            <hr />
+            <p className="py-5 text-sm text-center w-full">
+    © 2025 vibelayer.com. All rights reserved.
+  </p>
         </div>
       </div>
     </div>
