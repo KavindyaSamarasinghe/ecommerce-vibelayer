@@ -5,7 +5,7 @@ import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
 
 const Collection = () => {
-  const { products } = useContext(ShopContext);
+  const { products, search, showSearch } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -40,8 +40,15 @@ const Collection = () => {
       return;
     }
 
-    // First apply filters
+    // First apply search filter if search term exists
     let filteredProducts = [...products];
+    
+    if (search && search.trim() !== '') {
+      const searchTerm = search.toLowerCase();
+      filteredProducts = filteredProducts.filter(item => 
+        item.name.toLowerCase().includes(searchTerm)
+      );
+    }
 
     // Apply category filter if any categories are selected
     if (selectedCategories.length > 0) {
@@ -92,10 +99,10 @@ const Collection = () => {
     }
   }, [products]);
 
-  // Apply filters and sorting whenever selected categories, subcategories, or sort option changes
+  // Apply filters and sorting whenever selected categories, subcategories, sort option, or search changes
   useEffect(() => {
     applyFiltersAndSort();
-  }, [selectedCategories, selectedSubCategories, sortOption, products]);
+  }, [selectedCategories, selectedSubCategories, sortOption, products, search]);
 
   return (
     <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'>
@@ -163,7 +170,14 @@ const Collection = () => {
           </select>
         </div>
 
-        {/* Status information about filters (optional) */}
+        {/* Search term display */}
+        {search && search.trim() !== '' && (
+          <div className="mb-4 text-sm text-gray-600">
+            <p>Search results for: "{search}"</p>
+          </div>
+        )}
+
+        {/* Status information about filters */}
         {(selectedCategories.length > 0 || selectedSubCategories.length > 0) && (
           <div className="mb-4 text-sm text-gray-600">
             <p>
@@ -176,7 +190,11 @@ const Collection = () => {
 
         {filterProducts.length === 0 ? (
           <div className="flex justify-center items-center h-60 text-gray-500">
-            <p>No products match your selected filters.</p>
+            <p>
+              {search && search.trim() !== '' 
+                ? `No products match your search for "${search}".` 
+                : "No products match your selected filters."}
+            </p>
           </div>
         ) : (
           <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6'>
