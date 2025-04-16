@@ -1,33 +1,29 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
-import { assets, products } from '../assets/assets';
+import { assets } from '../assets/assets';
 import RelatedProducts from '../components/RelatedProducts';
 
 const Product = () => {
-
   const { productId } = useParams();
-
-  console.log(productId);
-  const { Products, currency } = useContext(ShopContext);
+  const { products, currency } = useContext(ShopContext); // Changed from Products to products
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState('');
   const [size, setSize] = useState('');
 
-  const fetchProductData = async () => {
-    products.map((item) => {
+  const fetchProductData = () => { // Removed async as it's not needed
+    products.forEach((item) => { // Changed map to forEach since we're not returning anything
       if (item._id === productId) {
         setProductData(item);
         setImage(item.image[0]);
         console.log(item);
-        return null;
       }
     });
   }
 
   useEffect(() => {
     fetchProductData();
-  }, [productId]);
+  }, [productId, products]); // Added products as dependency
 
   return productData ? (
     <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100'>
@@ -38,8 +34,6 @@ const Product = () => {
         {/* product image */}
         <div className='flex-1 flex flex-col-reverse gap-3 sm:flex-row'>
           <div className='flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full'>
-            
-            
             {
               productData.image.map((item, index) => (
                 <img 
@@ -53,24 +47,23 @@ const Product = () => {
             }
           </div>
           <div className='w-full sm:w-[80%]'>
-          <img className='w-full h-auto' src={image} alt="" />
+            <img className='w-full h-auto' src={image} alt="" />
           </div>
         </div>
 
         {/* product info */}
-
         <div className='flex-1'>
-          <h1 className='font-medium text-2xl mt-2'> {productData.name}</h1>
-          <div className=''flex items-center gap-1 mt-2>
-            <img src={assets.star_icon} alt="" className="w-3 5" />
-            <img src={assets.star_icon} alt="" className="w-3 5" />
-            <img src={assets.star_icon} alt="" className="w-3 5" />
-            <img src={assets.star_icon}  alt="" className="w-3 5" />
-            <img src={assets.star_dull_icon} alt="" className="w-3 5" />
+          <h1 className='font-medium text-2xl mt-2'>{productData.name}</h1>
+          <div className='flex items-center gap-1 mt-2'> {/* Fixed className syntax */}
+            <img src={assets.star_icon} alt="" className="w-3.5" /> {/* Fixed class names */}
+            <img src={assets.star_icon} alt="" className="w-3.5" />
+            <img src={assets.star_icon} alt="" className="w-3.5" />
+            <img src={assets.star_icon} alt="" className="w-3.5" />
+            <img src={assets.star_dull_icon} alt="" className="w-3.5" />
             <p className='pl-2'>(122)</p>
           </div>
           <p className='mt-5 text-3xl font-medium'>{currency}{productData.price}</p>
-          <p className='mt-5 text-gray-500 md"w-4/5'>{productData.description}</p>
+          <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p> {/* Fixed md:w syntax */}
           
           <div className='flex flex-col gap-4 my-8'>
             <p> Select Size</p>
@@ -83,15 +76,14 @@ const Product = () => {
           <button className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'>ADD TO CART</button>
           <hr className='mt-8 sm:w-4/5' />
           <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
-            <P>100% Original product.</P>
-            <P>Cash on delivery is available on this product.</P>
-            <P>Easy return and exchange policy within 7 days.</P>
+            <p>100% Original product.</p> {/* Fixed P to p */}
+            <p>Cash on delivery is available on this product.</p> {/* Fixed P to p */}
+            <p>Easy return and exchange policy within 7 days.</p> {/* Fixed P to p */}
           </div>
-
         </div>
-
       </div>
-      {/*  Description  and review*/}
+      
+      {/* Description and review */}
       <div className='mt-20'>
         <div className='flex'>
           <b className='border px-5 py-3 text-sm'>Description</b>
@@ -101,17 +93,16 @@ const Product = () => {
           <p>Made from 100% breathable cotton, this stylish t-shirt offers a soft and 
             comfortable fit perfect for everyday wear. The fabric is lightweight and skin-friendly, 
             making it ideal for both warm and cool weather.
-             </p>
-
-           <p>Machine washable at 30°C. Do not bleach. Tumble dry on low heat or hang to dry for best results. 
+          </p>
+          <p>Machine washable at 30°C. Do not bleach. Tumble dry on low heat or hang to dry for best results. 
             Iron on low if needed.
-           Designed for durability and long-lasting color.</p>
+            Designed for durability and long-lasting color.
+          </p>
+        </div>
       </div>
-    </div>
 
-    {/* display related products */}
-
-    <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
+      {/* display related products */}
+      <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
     </div>
   ) : <div className='opacity-0'></div>
 }
