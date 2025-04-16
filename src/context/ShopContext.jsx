@@ -1,8 +1,8 @@
-import React, { createContext, useState, useEffect } from "react";  // Added useEffect import
+import React, { createContext, useState, useEffect } from "react";
 import { products } from "../assets/assets";
 import { toast } from "react-toastify";
 
-// Create the context here, not import it
+// Create the context
 export const ShopContext = createContext(null);
 
 const ShopContextProvider = (props) => {
@@ -17,31 +17,37 @@ const ShopContextProvider = (props) => {
       toast.error("Please select a size first");
       return;
     }
-    
+
     setCartItems(prevCart => {
       const newCart = { ...prevCart };
-      
-      // If this item ID doesn't exist yet in the cart
+
       if (!newCart[itemId]) {
         newCart[itemId] = {};
       }
-      
-      // If this size doesn't exist yet for this item
+
       if (!newCart[itemId][size]) {
         newCart[itemId][size] = 1;
       } else {
-        // Increment quantity for this size
         newCart[itemId][size] += 1;
       }
-      
+
       return newCart;
     });
   };
 
-  // Log cart items whenever they change
   useEffect(() => {
     console.log(cartItems);
   }, [cartItems]);
+
+  const getCartCount = () => {
+    let totalCount = 0;
+    for (const itemId in cartItems) {
+      for (const size in cartItems[itemId]) {
+        totalCount += cartItems[itemId][size];
+      }
+    }
+    return totalCount;
+  };
 
   const value = {
     products,
@@ -49,7 +55,8 @@ const ShopContextProvider = (props) => {
     delivery_fee,
     search, setSearch,
     showSearch, setShowSearch,
-    cartItems, addToCart
+    cartItems, addToCart,
+    getCartCount,
   };
 
   return (
