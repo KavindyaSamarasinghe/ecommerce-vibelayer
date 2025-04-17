@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Title from '../components/Title';
 import CartTotal from '../components/CartTotal';
 import { assets } from '../assets/assets';
+import { ShopContext } from '../context/ShopContext'; // Added this import
 
 const PlaceOrder = () => {
-  // Fixed the typo with the extra "4" after the useState declaration
   const [method, setMethod] = useState('cod');
+  const { navigate } = useContext(ShopContext);
 
   return (
     <div className='min-h-screen pt-10 px-4 sm:px-10 bg-gray-50'>
@@ -77,6 +78,14 @@ const PlaceOrder = () => {
                 <p className='text-gray-500 text-sm font-medium mx-4'>CASH ON DELIVERY</p>
               </div>
             </div>
+          </div>
+          <div className='w-full max-w-md text-end mt-8'>
+            <button 
+              onClick={() => navigate('/orders')} 
+              className='bg-black text-white px-16 py-3 text-sm hover:bg-gray-800 transition-colors'
+            >
+              PLACE ORDER
+            </button>
           </div>
         </div>
       </div>
