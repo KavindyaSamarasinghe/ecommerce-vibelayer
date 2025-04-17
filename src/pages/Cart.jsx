@@ -4,7 +4,7 @@ import Title from '../components/Title';
 import CartTotal from '../components/CartTotal'; // Make sure path is correct
 
 const Cart = () => {
-  const { products, currency, cartItems } = useContext(ShopContext);
+  const { products, currency, cartItems, updateQuantity, navigate } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
@@ -58,6 +58,10 @@ const Cart = () => {
       
       {/* Add CartTotal component here */}
       <CartTotal />
+      <div className='w-full text-end>'>
+        <button onClick={()=>navigate('/place-order')} className='bg-black text-white text-sm my-8 px-8 py-3'>PROCEED TO CHECKOUT</button>
+
+      </div>
     </div>
   );
 };
