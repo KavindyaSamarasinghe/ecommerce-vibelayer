@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { ShopContext } from '../context/ShopContext'; // adjust the path as needed
+import { ShopContext } from '../context/ShopContext';
+import Title from '../components/Title';
+
 
 const Cart = () => {
   const { products, currency, cartItems } = useContext(ShopContext);
@@ -23,23 +25,17 @@ const Cart = () => {
     }
 
     setCartData(tempData);
-    console.log(tempData);
+    //console.log(tempData);
   }, [cartItems]);
 
   return (
-    <div>
-      <h2>Your Cart</h2>
-      {cartData.length === 0 ? (
-        <p>No items in cart</p>
-      ) : (
-        <ul>
-          {cartData.map((item, index) => (
-            <li key={index}>
-              Product ID: {item._id}, Size: {item.size}, Quantity: {item.quantity}
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className='border-t pt-14'>
+      <div className='text-2xl, mb-3'>
+      <Title text1={"YOUR"} text2={"CART"} />
+
+      </div>
+
+     
     </div>
   );
 };
