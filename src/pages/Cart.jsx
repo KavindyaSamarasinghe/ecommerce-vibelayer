@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
-import { assets } from '../assets/assets';
-
+import CartTotal from '../components/CartTotal'; // Make sure path is correct
 
 const Cart = () => {
-  const { products, currency, cartItems, updateQuantity } = useContext(ShopContext);
+  const { products, currency, cartItems } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
@@ -26,7 +25,6 @@ const Cart = () => {
     }
 
     setCartData(tempData);
-    //console.log(tempData);
   }, [cartItems]);
 
   return (
@@ -52,12 +50,14 @@ const Cart = () => {
                   </div>
                 </div>
                 <input className='border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1' type="number" min={1} defaultValue={item.quantity} />
-                <img onClick={()=>updateQuantity(item._id,item.size,0)} className='w-4 mr-4 sm:w-5 cursor-pointer' src={assets.bin_icon} alt="" />
               </div>
             );
           })
         }
       </div>
+      
+      {/* Add CartTotal component here */}
+      <CartTotal />
     </div>
   );
 };

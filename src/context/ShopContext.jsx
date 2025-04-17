@@ -55,6 +55,23 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData);
   }
 
+  const getCartAmount = () => {
+    let totalAmount = 0;
+    for(const items in cartItems) {
+      let itemsInfo = products.find((product) => product._id === items);
+      for(const item in cartItems[items]){
+        try {
+          if (cartItems[items][item] > 0) {
+            totalAmount += itemsInfo.price * cartItems[items][item];
+          }
+        } catch(error){
+          console.error("Error calculating cart amount:", error);
+        }
+      }
+    }
+    return totalAmount;
+  }
+
   const value = {
     products,
     currency,
@@ -62,7 +79,8 @@ const ShopContextProvider = (props) => {
     search, setSearch,
     showSearch, setShowSearch,
     cartItems, addToCart,
-    getCartCount, updateQuantity
+    getCartCount, updateQuantity,
+    getCartAmount,
   };
 
   return (
