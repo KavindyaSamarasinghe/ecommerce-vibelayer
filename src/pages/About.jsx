@@ -22,6 +22,12 @@ const About = () => {
           and daily wear, ensuring your wardrobe becomes more meaningful and less disposable. 
           When you feel good in what you wear, your confidence shines through—that's the ultimate 
           vibe we help you layer on.</p>
+
+          <b className='text-gray-800'>Our Mission</b>
+          <p>At VibeLayer, we create ethical, sustainable clothing that empowers individual expression. 
+            We're committed to producing high-quality pieces that stand the test of time while minimizing 
+            environmental impact. Our mission is to help you build a wardrobe that feels authentic to your 
+            unique style and values.</p>
         </div>
       </div>
       
